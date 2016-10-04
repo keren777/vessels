@@ -8,7 +8,8 @@
     "express": "^4.13.3",
     "gulp": "^3.9.0",
     "gulp-env": "^0.4.0",
-    "gulp-nodemon": "^2.0.6"
+    "gulp-nodemon": "^2.0.6",
+    "lodash": "^4.16.3"
   },
   "devDependencies": {},
   "scripts": {

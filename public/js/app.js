@@ -1,5 +1,4 @@
 
-
 var app = angular.module('app', ['uiGmapgoogle-maps', 'ui.bootstrap']);
 
 app.config(function(uiGmapGoogleMapApiProvider) {
@@ -12,14 +11,12 @@ app.config(function(uiGmapGoogleMapApiProvider) {
 
 app.controller('appCtrl', function($scope, $http, $uibModal, uiGmapGoogleMapApi){
 
-
-
     $scope.map = {
         center: {
             latitude: 0,
             longitude: 0
         },
-        zoom: 1,
+        zoom: 2,
         bounds: {},
         markersEvents: {
             click: function (marker, eventName, model, arguments) {
@@ -28,29 +25,10 @@ app.controller('appCtrl', function($scope, $http, $uibModal, uiGmapGoogleMapApi)
                     .then(function(res){
                         var vesselsInfo = res.data;
                         $scope.chosenVesselInfo = _.find(vesselsInfo, {_id: marker.key});
-                        console.log(res, marker, $scope.chosenVesselInfo)
-
-                        open($scope.chosenVesselInfo);
-
-                    })
-
-                console.log('Marker was clicked (' + marker + ', ' + eventName);//+', '+mydump(model, 0)+', '+mydump(arguments)+')');
+                        openVesselDetails();
+                    });
             }
         }
-    };
-
-    var open = function (chosenVesselInfo) {
-        var modalInstance = $uibModal.open({
-            controller: 'appCtrl',
-            scope: $scope,
-            template: '<vessel-info></vessel-info>'
-        });
-
-        modalInstance.result.then(function(){
-            // closed
-        }, function(){
-            // dismissed
-        });
     };
 
     $scope.options = {
@@ -67,27 +45,94 @@ app.controller('appCtrl', function($scope, $http, $uibModal, uiGmapGoogleMapApi)
             var markers = [];
             $http.get('/vessel-locations')
                 .then(function(res){
-                    console.log(res);
-
                     res.data.forEach(function(vessel, i){
                         var ret = {
                             id: vessel._id,
-                            latitude: vessel.lastpos.geometry.coordinates[0],
-                            longitude: vessel.lastpos.geometry.coordinates[1],
-                            title: 'm' + i
+                            latitude: vessel.lastpos.geometry.coordinates[1],
+                            longitude: vessel.lastpos.geometry.coordinates[0]
                         };
-
-                        markers.push(ret, $scope.map.bounds);
-                    })
+                        markers.push(ret);
+                    });
                 });
-                $scope.markers = markers;
+            $scope.markers = markers;
         }
     }, true);
 
 
-    // uiGmapGoogleMapApi is a promise.
-    // The "then" callback function provides the google.maps object.
-    uiGmapGoogleMapApi.then(function(maps) {
+    $scope.update = function(formData){
+        var vessel = $('#vesselDataForm').serializeArray().reduce(function(obj, item) {
+                obj[item.name] = item.value;
+                return obj;
+        }, {});
 
-    });
-})
+        vessel._id = $scope.chosenVesselInfo._id;
+        $http.post('vessel-info', vessel)
+            .then(
+                function(response){
+                    // success callback
+                    $scope.$dismiss();
+                },
+                function(response){
+                    // failure callback
+                    console.log('err', response);
+                }
+            );
+    };
+
+    $scope.biggestShip = function(){
+        $http.get('/biggest-ship')
+            .then(function(res){
+                var vessel = res.data;
+                var index = _.findIndex($scope.markers, function(marker){
+                    return marker.id == vessel._id;
+                });
+
+                $scope.markers[index].icon = '/img/big-ship.png';
+                $scope.map = {
+                    center: {
+                        latitude: $scope.markers[index].latitude,
+                        longitude: $scope.markers[index].longitude
+                    },
+                    zoom: 10
+                };
+                $('.queries-list').hide();
+            });
+    };
+
+    $scope.inCoordinates = function(){
+        $scope.reset();
+        $scope.markers.forEach(function(marker){
+            if(marker.longitude <= 40 && marker.longitude >= 28 && marker.latitude <= 42 && marker.latitude >= 30){
+                marker.icon = '/img/ship-icon.png';
+            }
+        });
+    };
+
+    $scope.reset = function(){
+        $scope.map = {
+            center: {
+                latitude: 0,
+                longitude: 0
+            },
+            zoom: 2
+        };
+        $scope.markers.forEach(function(el){
+            if(el.icon){
+                delete el.icon;
+            }
+        });
+        $('.queries-list').hide();
+    };
+
+    var openVesselDetails = function () {
+        var modalInstance = $uibModal.open({
+            controller: 'appCtrl',
+            scope: $scope,
+            template: '<vessel-info></vessel-info>'
+        });
+    };
+
+    $('#queriesBtn').on('click', function(){
+        $('.queries-list').show();
+    })
+});

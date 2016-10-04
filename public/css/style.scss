@@ -1,1 +1,69 @@
-.angular-google-map-container { height: 400px; }
+
+.top-nav {
+  padding: 0 40px;
+  color: grey;
+  height: 50px;
+  background: #2f2d2d;
+  position: relative;
+
+  button {
+    margin-top: 9px;
+    padding: 5px 15px;
+    font-size: 16px;
+    float: left;
+  }
+
+  h1 {
+    line-height: 7px;
+    color: #fff;
+    float: right;
+  }
+
+  .queries-list {
+    display: none;
+    clear: both;
+    border: 1px solid #ccc;
+    width: 290px;
+    position: absolute;
+    top: 52px;
+    z-index: 100;
+    background: #2f2d2d;
+    color: #fff;
+
+    a {
+      border-bottom: 1px solid #ccc;
+      display: block;
+      color: #fff;
+      padding: 10px;
+      cursor: pointer;
+    }
+  }
+}
+
+div#container {
+  padding: 40px;
+
+
+  .angular-google-map-container {
+    height: 500px;
+    border: 1px solid #ccc;
+  }
+}
+
+.modal-dialog {
+  .modal-title {
+    text-align: Center;
+    color: blue;
+  }
+
+  #vesselDataForm {
+    padding: 20px 40px;
+    label {
+      width: 30%;
+    }
+    input {
+      width: 60%;
+    }
+  }
+}
+
