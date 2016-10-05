@@ -48,6 +48,19 @@ div#container {
     height: 500px;
     border: 1px solid #ccc;
   }
+
+
+  .msg-container {
+    width: 100%;
+    text-align: center;
+
+    .success-msg{
+      display: none;
+      font-size: 16px;
+      color: limegreen;
+    }
+  }
+
 }
 
 .modal-dialog {

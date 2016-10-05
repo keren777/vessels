@@ -4,14 +4,13 @@
     </div>
     <div class="modal-body" id="modal-body">
         <form id="vesselDataForm">
-
             <div class="form-group" ng-repeat="(key, value) in chosenVesselInfo" ng-if="key != '_id'">
                 <label>{{key}}</label>
                 <input type="text" name="{{key}}" ng-value="'{{value}}'">
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" type="button" ng-click="$dismiss()">Cancel</button>
-                <input class="btn btn-primary" type="submit" value="Save" ng-click="update()">
+                <input class="btn btn-primary" type="submit" value="Save" ng-click="updateVessel()">
             </div>
         </form>
     </div>

@@ -4,22 +4,20 @@ var app = angular.module('app', ['uiGmapgoogle-maps', 'ui.bootstrap']);
 app.config(function(uiGmapGoogleMapApiProvider) {
     uiGmapGoogleMapApiProvider.configure({
         key: 'AIzaSyBDIDdFjgjQUIHL7KJp2maK32pkYdwAi6M',
-        v: '3', //defaults to latest 3.X anyhow
+        v: '3',
         libraries: 'weather,geometry,visualization'
     });
 });
 
-app.controller('appCtrl', function($scope, $http, $uibModal, uiGmapGoogleMapApi){
-
+app.controller('appCtrl', function($scope, $http, $uibModal){
     $scope.map = {
         center: {
             latitude: 0,
             longitude: 0
         },
-        zoom: 2,
         bounds: {},
         markersEvents: {
-            click: function (marker, eventName, model, arguments) {
+            click: function (marker) {
 
                 $http.get('/vessel-info')
                     .then(function(res){
@@ -29,10 +27,6 @@ app.controller('appCtrl', function($scope, $http, $uibModal, uiGmapGoogleMapApi)
                     });
             }
         }
-    };
-
-    $scope.options = {
-        scrollwheel: false
     };
 
     $scope.markers = [];
@@ -58,8 +52,7 @@ app.controller('appCtrl', function($scope, $http, $uibModal, uiGmapGoogleMapApi)
         }
     }, true);
 
-
-    $scope.update = function(formData){
+    $scope.updateVessel = function(formData){
         var vessel = $('#vesselDataForm').serializeArray().reduce(function(obj, item) {
                 obj[item.name] = item.value;
                 return obj;
@@ -70,6 +63,7 @@ app.controller('appCtrl', function($scope, $http, $uibModal, uiGmapGoogleMapApi)
             .then(
                 function(response){
                     // success callback
+                    $('.success-msg').fadeIn(500).delay(2000).fadeOut(500);
                     $scope.$dismiss();
                 },
                 function(response){
@@ -80,6 +74,7 @@ app.controller('appCtrl', function($scope, $http, $uibModal, uiGmapGoogleMapApi)
     };
 
     $scope.biggestShip = function(){
+        $scope.reset();
         $http.get('/biggest-ship')
             .then(function(res){
                 var vessel = res.data;
@@ -88,13 +83,6 @@ app.controller('appCtrl', function($scope, $http, $uibModal, uiGmapGoogleMapApi)
                 });
 
                 $scope.markers[index].icon = '/img/big-ship.png';
-                $scope.map = {
-                    center: {
-                        latitude: $scope.markers[index].latitude,
-                        longitude: $scope.markers[index].longitude
-                    },
-                    zoom: 10
-                };
                 $('.queries-list').hide();
             });
     };
@@ -109,13 +97,6 @@ app.controller('appCtrl', function($scope, $http, $uibModal, uiGmapGoogleMapApi)
     };
 
     $scope.reset = function(){
-        $scope.map = {
-            center: {
-                latitude: 0,
-                longitude: 0
-            },
-            zoom: 2
-        };
         $scope.markers.forEach(function(el){
             if(el.icon){
                 delete el.icon;

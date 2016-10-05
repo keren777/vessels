@@ -5,7 +5,7 @@
     <title>Vessels</title>
     <meta name="viewport" content="initial-scale=1.0">
 </head>
-<body ng-app="app" ng-controller="appCtrl as $ctrl">
+<body ng-app="app" ng-controller="appCtrl">
     <nav class="top-nav">
         <h1>Vessels</h1>
         <button id="queriesBtn">Queries</button>
@@ -14,13 +14,15 @@
             <a ng-click="inCoordinates()">Vessels with coordinate between (28,40) and (30,42)</a>
             <a ng-click="reset()">Reset</a>
         </div>
-
     </nav>
     <div id="container">
         <div class="angular-google-map-container">
             <ui-gmap-google-map center="map.center" zoom="map.zoom" draggable="true" options="options" bounds="map.bounds" events="map.events">
-                <ui-gmap-markers models="markers" coords="'self'" icon="'icon'" events="map.markersEvents"></ui-gmap-markers>
+                <ui-gmap-markers models="markers" coords="'self'" icon="'icon'" events="map.markersEvents" fit="true"></ui-gmap-markers>
             </ui-gmap-google-map>
+        </div>
+        <div class="msg-container">
+            <span class="success-msg">Vessel successfully updated!</span>
         </div>
     </div>
 

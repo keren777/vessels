@@ -35,6 +35,13 @@ div#container {
   div#container .angular-google-map-container {
     height: 500px;
     border: 1px solid #ccc; }
+  div#container .msg-container {
+    width: 100%;
+    text-align: center; }
+    div#container .msg-container .success-msg {
+      display: none;
+      font-size: 16px;
+      color: limegreen; }
 
 .modal-dialog .modal-title {
   text-align: Center;
